@@ -1,6 +1,19 @@
 var crypto = require('crypto'),
     User = require('../models/user.js'),
+    multer = require('multer'),
     Post = require('../models/post.js');
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb){
+        cb(null, './public/images')
+    },
+    filename: function (req, file, cb){
+        cb(null, file.originalname)
+    }
+});
+var upload = multer({
+    storage: storage
+});
 
 module.exports = function (app) {
     app.get('/', function (req, res) {
@@ -150,12 +163,9 @@ module.exports = function (app) {
 	});
 
 	app.post('/upload', checkLogin);
-	app.post('/upload', function (req, res) {
-		console.log(req.files);//test
-		console.log(req.body);//test
-
-		req.flash('success', '文件上传成功');
-		res.redirect('/upload');
+	app.post('/upload', upload.array('field1', 5), function (req, res) {
+	  req.flash('success', '文件上传成功!');
+	  res.redirect('/upload');
 	});
 
 	app.get('/search', function (req, res){
@@ -173,7 +183,7 @@ module.exports = function (app) {
 			});
 		});
 	});
-	
+
 	app.get('/u/:name', function (req, res) {
 		var page = req.query.p ? parseInt(req.query.p) : 1;
 		//检查用户是否存在
@@ -324,5 +334,5 @@ module.exports = function (app) {
 		}
 		next();
 	}
-};
 
+};
