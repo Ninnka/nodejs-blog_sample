@@ -16,6 +16,26 @@ var upload = multer({
 });
 
 module.exports = function (app) {
+    app.get('/ccc', function (req, res){
+        var options = {
+              root: __dirname + '/views/',
+              dotfiles: 'deny',
+              headers: {
+                'x-timestamp': Date.now(),
+                'x-sent': true
+              }
+          };
+        res.sendFile('comments.html', options, function(err){
+            if(err){
+                console.log(err);
+                res.status(err.status).end();
+            }else {
+                console.log("success");
+            }
+        });
+    });
+
+
     app.get('/', function (req, res) {
 	    //判断是否是第一页，并把请求的页数转换成 number 类型
 	    var page = req.query.p ? parseInt(req.query.p) : 1;

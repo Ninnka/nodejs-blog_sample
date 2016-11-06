@@ -59,7 +59,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 
 app.use(cookieParser())
-app.use(express.static('public/stylesheets'))
+app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static('public/stylesheets'))
 app.use(function (err, req, res, next) {
   var meta = '[' + new Date() + ']' + req.url + '\n'
   errorLog.write(meta + err.stack + '\n')

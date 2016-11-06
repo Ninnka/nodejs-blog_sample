@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>props and state example</title>
+    <script src="https://npmcdn.com/jquery@3.1.0/dist/jquery.min.js"></script>
+    <script src="/javascripts/react.js"></script>
+    <script src="/javascripts/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.min.js"></script>
+    <script type="text/babel">
+        $(document).ready(
+            function(){
+                var Content = React.createClass({
+                    getInitialState: function(){
+                        return {
+                            text: "reply to: ",
+                            inputText: "",
+                        };
+                    },
+                    handleChange: function(event){
+                        this.setState({
+                            inputText: event.target.value
+                        });
+                    },
+                    handlerSubmit: function(){
+                        console.log(this.state.text + this.props.selectName + "\n" + this.state.inputText);
+                    },
+                    render: function(){
+                        return <div>
+                                <textarea placeholder="enter something" onChange={this.handleChange}></textarea>
+                                <button onClick={this.handlerSubmit} style={{width: 50+'px', height:50+'px'}}></button>
+                            </div>;
+                    },
+                });
+                var Comment = React.createClass({
+                    getInitialState: function(){
+                        return {
+                            names: ["Tim", "John", "Hank"],
+                            selectName: '',
+                            bc: {
+                                backgroundColor: '#FF0000',
+                                width: 100+'px',
+                                height: 100+'px',
+                            },
+                            password: '',
+                        };
+                    },
+                    handleSelect: function(event){
+                        this.setState({selectName: event.target.value});
+                    },
+                    handleWheel: function(event){
+                        var newColor = (parseInt(this.state.bc.backgroundColor.substr(1),16)+event.deltaY * 997).toString(16);
+                        newColor = '#'+newColor.substr(0,6).toUpperCase();
+                        this.setState({
+                            bc: {
+                                backgroundColor: newColor,
+                                width: 100+'px',
+                                height: 100+'px',
+                            }
+                        });
+                    },
+                    handleKeyPress: function(event){
+                        this.setState({
+                            password: this.state.password + event.which,
+                        });
+                    },
+                    render: function() {
+                        var options = [];
+                        for(var option in this.state.names){
+                            options.push(<option value={this.state.names[option]} key={option}>{this.state.names[option]}</option>)
+                        };
+                        console.log(this.state.bc.backgroundColor);
+                        console.log(this.state.password);
+                        return <div>
+                            <select onChange={this.handleSelect}>
+                                {options}
+                            </select>
+                            <Content selectName={this.state.selectName}></Content>
+                            <div onWheel={this.handleWheel} style={this.state.bc}></div>
+                            <input type="text" onKeyPress={this.handleKeyPress}/>
+                            <p style={{'display': this.state.password.indexOf('495051') >= 0 ? 'inline' : 'none'}}>you got it</p>
+                        </div>;
+                    },
+                });
+                ReactDOM.render(<Comment></Comment>, $('#container')[0]);
+            }
+        )
+    </script>
+</head>
+<body>
+    <div id="container"></div>
+</body>
+</html>
